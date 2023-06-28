@@ -101,10 +101,17 @@ def file_exists_in_completed_tasks(abspath):
     history_logging = history.History()
     if settings.get_setting('ignore_extension'):
         abspath, extension = os.path.splitext(abspath)
-    failed_tasks = history_logging.get_historic_tasks_list_with_source_probe(task_success=None, abspath=abspath)
-    # Check if any historic tasks were found
-    if failed_tasks.count() > 0:
-        return True
+        all_history = history_logging.get_historic_task_list()
+        for history_item in all_history:
+            item_abspath, extension = os.path.splitext(history_item.get('abspath', ''))
+            if item_abspath == abspath:
+                return True
+        return False
+    else:
+        failed_tasks = history_logging.get_historic_tasks_list_with_source_probe(task_success=None, abspath=abspath)
+        # Check if any historic tasks were found
+        if failed_tasks.count() > 0:
+            return True
     return False
 
 
