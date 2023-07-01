@@ -55,7 +55,7 @@ class Settings(PluginSettings):
     def __set_ignore_extension_form_settings(self):
         values = {
             "label":      "Ignore file extension?",
-            "description": "Testing",
+            "description": "Ignores file extension, used in case you change the container when transcoding",
             "input_type": "checkbox",
         }
         if len(self.get_setting('allowed_extensions')) > 0:
