@@ -35,7 +35,7 @@ logger = logging.getLogger("Unmanic.Plugin.ignore_completed_tasks")
 class Settings(PluginSettings):
     settings = {
         "allowed_extensions": '',
-        "ignore_extension": False,
+        "ignore_extension": True,
     }
     form_settings = {
         "allowed_extensions": {
@@ -44,19 +44,22 @@ class Settings(PluginSettings):
                            "Leaving this blank will do a DB lookup against every file scanned to check if it "
                            "is in the completed task list.",
         },
-        "ignore_extension": self.__set_ignore_extension_form_settings()
     }
 
     def __init__(self, *args, **kwargs):
         super(Settings, self).__init__(*args, **kwargs)
+        self.form_settings["ignore_extension"] = self.__set_ignore_extension_form_settings()
+
+
 
     def __set_ignore_extension_form_settings(self):
         values = {
             "label":      "Ignore file extension?",
+            "description": "Testing",
             "input_type": "checkbox",
         }
         if len(self.get_setting('allowed_extensions')) > 0:
-            values["display"] = 'hiddenhidden'
+            values["display"] = 'hidden'
         return values
 
 
@@ -99,6 +102,7 @@ def file_exists_in_completed_tasks(abspath):
     # Fetch historical tasks
     from unmanic.libs import history
     history_logging = history.History()
+    settings = Settings()
     if settings.get_setting('ignore_extension'):
         abspath, extension = os.path.splitext(abspath)
         all_history = history_logging.get_historic_task_list()
